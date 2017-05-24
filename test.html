@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>MRI</title>
+    <script src="https://www.babylonjs.com/babylon.js"></script>
+    <script src="dat.gui.min.js"></script>
+
+    <style>
+        html, body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+    </style>
+</head>
+<body>
+<canvas id="renderCanvas"></canvas>
+<script>
+    if (BABYLON.Engine.isSupported()) {
+        var canvas = document.getElementById("renderCanvas");
+        var engine = new BABYLON.Engine(canvas, true);
+    }
+
+    var planes = [];
+    var planes1 = [];
+    var planes2 = [];
+
+    var createScene = function () {
+
+        var scene = new BABYLON.Scene(engine);
+        scene.clearColor = new BABYLON.Color3(0, 0, 0);
+        var camera = new BABYLON.ArcRotateCamera("camera1", 0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene);
+        //camera.setPosition(new BABYLON.Vector3(-5,0, -0.1));
+        camera.setPosition(new BABYLON.Vector3(-1.96, 0.382, -0.178));
+        //camera.setPosition(new BABYLON.Vector3(-1,0.5,1));
+        camera.attachControl(canvas, true);
+
+        var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+
+        light.intensity = 0.9;
+
+        var dynamics2 = [];
+        var mats2 = [];
+        var images2 = [];
+        var contexts2 = [];
+        var imageData2 = [];
+        var data2 = [];
+        var canvasHeight = 100;
+        var canvasWidth = 100;
+
+
+        for (var i = 0; i<245; i++) {
+
+            images2[i]  = new Image();
+            images2[i].src = "Male_Head/Head" + i + ".jpg";
+            images2[i].Nbr = i;
+
+            images2[i].onload = function () {
+                var i = this.Nbr;
+                dynamics2[i] = new BABYLON.DynamicTexture("d2" + i, 100, scene, true); //create a canvas to load image onto in order to make black transparent
+                contexts2[i] = dynamics2[i].getContext();
+                contexts2[i].drawImage(this, 80, 80, images2[i].width-150, images2[i].height-150, 0,0, canvasWidth, canvasHeight);
+                dynamics2[i].update();
+                imageData2[i] = contexts2[i].getImageData(0, 0, canvasWidth, canvasHeight);
+                data2[i] = imageData2[i].data;
+                /*for near black pixels set alpha(transparency) to 0*/
+                for (var j = 0; j < data2[i].length; j += 4) {
+                    if(data2[i][j]  < 25 && data2[i][j + 1] < 25 && data2[i][j + 2] < 25) {
+                        //clr[i][j+3]=data[i][j+3];
+                        //console.log(j+3,data[i][j+3]);
+                        data2[i][j + 3] = 0;
+                    }
+                }
+                contexts2[i].putImageData(imageData2[i], 0, 0);
+                dynamics2[i].update();
+
+                mats2[i] = new BABYLON.StandardMaterial("m2" + i, scene);
+                mats2[i].emissiveTexture = dynamics2[i]; //set texture to appropriate canvas
+                mats2[i].opacityTexture = dynamics2[i];
+
+                planes2[i] = BABYLON.MeshBuilder.CreatePlane("plane2" + i, {width: canvasWidth/100, height:canvasHeight/100, updatable:true}, scene);
+                planes2[i].material = mats2[i];
+                planes2[i].position.z = i/200;
+                //planes1[i].position.y = i/200;
+                planes2[i].rotation.x = Math.PI/2;
+                //planes1[i].rotation.y = Math.PI / 3;
+                //planes2[i].scaling.x=0.55;
+                //planes2[i].scaling.y=0.55;
+            }
+        }
+        return scene;
+    };
+
+    var scene = createScene();
+
+
+    engine.runRenderLoop(function () {
+        scene.render();
+    });
+
+    window.addEventListener("resize", function () {
+        engine.resize();
+    });
+
+</script>
+</body>
+</html>
