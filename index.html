@@ -40,15 +40,11 @@
         var scene = new BABYLON.Scene(engine);
         scene.clearColor = new BABYLON.Color3(0, 0, 0);
         var camera = new BABYLON.ArcRotateCamera("camera1",0,0,0, new BABYLON.Vector3(0,0,0), scene);
-        //var camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 1, -15), scene);
-        //camera.setPosition(new BABYLON.Vector3(-5,0, -0.1));
-        //camera.setPosition(new BABYLON.Vector3(-1, 0, -0.1));
-        //camera.setPosition(new BABYLON.Vector3(-1,0.5,-0.2));
+        //var camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(-1.5,0.5, 0), scene);
         camera.setPosition(new BABYLON.Vector3(-1.5,0.5,0));
         camera.attachControl(canvas, true);
         camera.detachControl(canvas);
-        //Restricting camera zooming
-        camera.lowerRadiusLimit = camera.upperRadiusLimit=camera.radius=3
+        camera.radius=3;
 
         var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 0, 0), scene);
         light.intensity = 0.5;
@@ -77,15 +73,18 @@
 
         p = BABYLON.MeshBuilder.CreatePlane("plane", {width: canvasWidth/100, height:canvasHeight/100}, scene);
         p.position = new BABYLON.Vector3(0,0,1);
+        p.scaling = new BABYLON.Vector3(0.8,0.8,0.8);
         p.isVisible=false;
-        //p.scaling=new BABYLON.Vector3(1.5,1.5,1.5);
 
         p1 = BABYLON.MeshBuilder.CreatePlane("plane1", {width: canvasWidth/100, height:canvasHeight/100}, scene);
-        p1.position = new BABYLON.Vector3(0,0,0);
+        p1.position = new BABYLON.Vector3(-0.5,0,0);
+        p1.scaling = new BABYLON.Vector3(0.6,0.6,0.6);
         p1.isVisible=false;
         p1.rotation.y=Math.PI/2;
+
         p2 = BABYLON.MeshBuilder.CreatePlane("plane2", {width: canvasWidth/100, height:canvasHeight/100}, scene);
         p2.position = new BABYLON.Vector3(0,0,-1);
+        p2.scaling = new BABYLON.Vector3(0.8,0.8,0.8);
         p2.isVisible=false;
         p2.rotation.y=-Math.PI/2;
 
@@ -161,8 +160,6 @@
                 mats1[i].backFaceCulling = false;
                 planes1[i].checkCollisions = true;
                 planes1[i].position.z = i/200;
-                //planes1[i].position.x=-2;
-                //planes1[i].position.y=-0.2;
                 planes1[i].parent=p1;
             }
         }
@@ -206,136 +203,209 @@
         }
 
 
-
-        var currentPosition = { x: 0, y: 0 };
-        var currentRotation = { x: 0, y: 0 };
+        var currentPosition = {x: 0, y: 0};
+        var currentRotation = {x: 0, y: 0};
         var clicked = false;
 
-        canvas.addEventListener("pointerdown", rmv_pd=function (evt) {
+        function rmv_pd1(evt) {
             currentPosition.x = evt.clientX;
             currentPosition.y = evt.clientY;
-            for(i=0;i<129;i++) {
-                currentRotation.x = p.rotation.x;
-                currentRotation.y = p.rotation.y;
-                clicked = true;
-            }
-        });
-
-        canvas.addEventListener("pointermove", rmv_pm=function (evt) {
-            if (!clicked) {
-                return;
-            }
-            p.rotation.y = currentRotation.y - (evt.clientX - currentPosition.x) / 100.0;
-            p.rotation.x = currentRotation.x + (evt.clientY - currentPosition.y) / 100.0;
-        });
-
-        canvas.addEventListener("pointerup", rmv_pu=function (evt) {
-            clicked = false;
-        });
-
-
-        var currentPosition = { x: 0, y: 0 };
-        var currentRotation = { x: 0, y: 0 };
-        var clicked = false;
-
-        canvas.addEventListener("pointerdown", rmv_pd1=function (evt) {
-            currentPosition.x = evt.clientX;
-            currentPosition.y = evt.clientY;
-            for(i=0;i<129;i++) {
+            for (i = 0; i < 129; i++) {
                 currentRotation.x = p1.rotation.x;
                 currentRotation.y = p1.rotation.y;
                 clicked = true;
             }
-        });
+        }
 
-        canvas.addEventListener("pointermove", rmv_pm1=function (evt) {
+        function rmv_pm1(evt)
+        {
             if (!clicked) {
                 return;
             }
             p1.rotation.y = currentRotation.y - (evt.clientX - currentPosition.x) / 100.0;
             p1.rotation.x = currentRotation.x + (evt.clientY - currentPosition.y) / 100.0;
-        });
+        }
 
-        canvas.addEventListener("pointerup", rmv_pu1=function (evt) {
+        function rmv_pu(evt)
+        {
             clicked = false;
-        });
+        }
 
-
-
-        var currentPosition = { x: 0, y: 0 };
-        var currentRotation = { x: 0, y: 0 };
+        var currentPosition = {x: 0, y: 0};
+        var currentRotation = {x: 0, y: 0};
         var clicked = false;
 
-        canvas.addEventListener("pointerdown", rmv_pd2=function (evt) {
+        function rmv_pd(evt) {
             currentPosition.x = evt.clientX;
             currentPosition.y = evt.clientY;
-            for(i=0;i<129;i++) {
+            for (i = 0; i < 129; i++) {
+                currentRotation.x = p.rotation.x;
+                currentRotation.y = p.rotation.y;
+                clicked = true;
+            }
+        }
+        function rmv_pm(evt)
+        {
+            if (!clicked) {
+                return;
+            }
+            p.rotation.y = currentRotation.y - (evt.clientX - currentPosition.x) / 100.0;
+            p.rotation.x = currentRotation.x + (evt.clientY - currentPosition.y) / 100.0;
+        }
+
+        var currentPosition = {x: 0, y: 0};
+        var currentRotation = {x: 0, y: 0};
+        var clicked = false;
+
+        function rmv_pd2(evt) {
+            currentPosition.x = evt.clientX;
+            currentPosition.y = evt.clientY;
+            for (i = 0; i < 129; i++) {
                 currentRotation.x = p2.rotation.x;
                 currentRotation.y = p2.rotation.y;
                 clicked = true;
             }
-        });
-
-        canvas.addEventListener("pointermove", rmv_pm2=function (evt) {
+        }
+        function rmv_pm2(evt)
+        {
             if (!clicked) {
                 return;
             }
             p2.rotation.y = currentRotation.y - (evt.clientX - currentPosition.x) / 100.0;
             p2.rotation.x = currentRotation.x + (evt.clientY - currentPosition.y) / 100.0;
-        });
+        }
 
-        canvas.addEventListener("pointerup", rmv_pu2=function (evt) {
-            clicked = false;
-        });
+        canvas.addEventListener("pointerup", rmv_pu,true);
 
-
-        var sphere = BABYLON.Mesh.CreateSphere('sphere', 1, 1, scene);
-        sphere.position = new BABYLON.Vector3(1,0,1);
+        var sphere = BABYLON.Mesh.CreatePlane("sphere", 0.1, scene);
+        sphere.position = new BABYLON.Vector3(-1,0.7,0.8);
+        sphere.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+      //  sphere.scaling = new BABYLON.Vector3(0.5,0.5,0.5);
 
         sphere.actionManager = new BABYLON.ActionManager(scene);
         sphere.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, function () {
-            /*canvas.removeEventListener("pointerdown",rmv_pd1);
-            canvas.removeEventListener("pointermove",rmv_pm1);
-            canvas.removeEventListener("pointerup",rmv_pu1);
-            canvas.removeEventListener("pointerdown",rmv_pd2);
-            canvas.removeEventListener("pointermove",rmv_pm2);
-            canvas.removeEventListener("pointerup",rmv_pu2);*/
-            // rotate_saggatial();
-
+            console.log("Sphere Triggered");
+            canvas.removeEventListener("pointerdown",rmv_pd1,true);
+            canvas.removeEventListener("pointermove",rmv_pm1,true);
+            canvas.removeEventListener("pointerdown",rmv_pd2,true);
+            canvas.removeEventListener("pointermove",rmv_pm2,true);
+            canvas.addEventListener("pointerdown",rmv_pd,true);
+            canvas.addEventListener("pointermove",rmv_pm,true);
+            p1.position = new BABYLON.Vector3(-0.5,0,0);
+            p1.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+            p1.scaling = new BABYLON.Vector3(0.6,0.6,0.6);
+            p2.position = new BABYLON.Vector3(0,0,-1);
+            p2.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
+            p2.scaling = new BABYLON.Vector3(0.8,0.8,0.8);
         }));
 
-        var sphere1 = BABYLON.Mesh.CreateSphere('sphere1', 1, 1, scene);
-        sphere1.position = new BABYLON.Vector3(1,0,0);
+        var sphere1 = BABYLON.Mesh.CreatePlane("sphere1", 0.1, scene);
+        sphere1.position = new BABYLON.Vector3(-1,0.7,0);
+        sphere1.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+       // sphere1.scaling = new BABYLON.Vector3(0.5,0.5,0.5);
+
 
         sphere1.actionManager = new BABYLON.ActionManager(scene);
         sphere1.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, function () {
-            /*canvas.removeEventListener("pointerdown",rmv_pd);
-            canvas.removeEventListener("pointermove",rmv_pm);
-            canvas.removeEventListener("pointerup",rmv_pu);
-            canvas.removeEventListener("pointerdown",rmv_pd2);
-            canvas.removeEventListener("pointermove",rmv_pm2);
-            canvas.removeEventListener("pointerup",rmv_pu2);*/
-            // rotate_saggatial();
-
+            console.log("Sphere1 Triggered");
+            canvas.removeEventListener("pointerdown",rmv_pd,true);
+            canvas.removeEventListener("pointermove",rmv_pm,true);
+            canvas.removeEventListener("pointerdown",rmv_pd2,true);
+            canvas.removeEventListener("pointermove",rmv_pm2,true);
+            canvas.addEventListener("pointerdown",rmv_pd1,true);
+            canvas.addEventListener("pointermove",rmv_pm1,true);
+            p.position = new BABYLON.Vector3(0,0,1);
+            p.rotation =  new BABYLON.Vector3(0, 0, 0);
+            p.scaling = new BABYLON.Vector3(0.8,0.8,0.8);
+            p2.position = new BABYLON.Vector3(0,0,-1);
+            p2.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
+            p2.scaling = new BABYLON.Vector3(0.8,0.8,0.8);
         }));
 
-        var sphere2 = BABYLON.Mesh.CreateSphere('sphere2', 1, 1, scene);
-        sphere2.position = new BABYLON.Vector3(1,0,-1);
+        var sphere2 = BABYLON.Mesh.CreatePlane("sphere2", 0.1, scene);
+        sphere2.position = new BABYLON.Vector3(-1,0.7,-0.8);
+        sphere2.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+        //sphere2.scaling = new BABYLON.Vector3(0.5,0.5,0.5);
+
 
         sphere2.actionManager = new BABYLON.ActionManager(scene);
         sphere2.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, function () {
-            /*canvas.removeEventListener("pointerdown",rmv_pd);
-            canvas.removeEventListener("pointermove",rmv_pm);
-            canvas.removeEventListener("pointerup",rmv_pu);
-            canvas.removeEventListener("pointerdown",rmv_pd1);
-            canvas.removeEventListener("pointermove",rmv_pm);
-            canvas.removeEventListener("pointerup",rmv_pu1);*/
-            // rotate_saggatial();
+            console.log("Sphere2 Triggered");
+            canvas.removeEventListener("pointerdown",rmv_pd,true);
+            canvas.removeEventListener("pointermove",rmv_pm,true);
+            canvas.removeEventListener("pointerdown",rmv_pd1,true);
+            canvas.removeEventListener("pointermove",rmv_pm1,true);
+            canvas.addEventListener("pointerdown",rmv_pd2,true);
+            canvas.addEventListener("pointermove",rmv_pm2,true);
+            p.position = new BABYLON.Vector3(0,0,1);
+            p.rotation =  new BABYLON.Vector3(0, 0, 0);
+            p.scaling = new BABYLON.Vector3(0.8,0.8,0.8);
+            p1.position = new BABYLON.Vector3(-0.5,0,0);
+            p1.rotation =  new BABYLON.Vector3(0,Math.PI/2, 0);
+            p1.scaling = new BABYLON.Vector3(0.6,0.6,0.6);
 
         }));
 
+        var currentSlice=128;
+        var currentSlice1=100;
+        var currentSlice2=30;
 
+        var obj = {Coronal: 30};
+        var gui = new dat.gui.GUI();
+        gui.add(obj, "Coronal",1,30,1).onChange(function (v) {
+            if(planes2[currentSlice2]) {
+                planes2[currentSlice2].position.y = 0;
+            }
+            currentSlice2=v;
+            planes2[currentSlice2].position.y=0.5;
+        });
 
+        var obj = {Saggital: 128};
+        var gui = new dat.gui.GUI();
+        gui.add(obj, "Saggital", 0,128,1).onChange(function (v) {
+            if(planes[currentSlice]) {
+                planes[currentSlice].position.y = 0;
+            }
+            currentSlice=v;
+            planes[currentSlice].position.y=0.5;
+        });
+
+        var obj = {Axial: 100};
+        var gui = new dat.gui.GUI();
+        gui.add(obj, "Axial", 0,100,1).onChange(function (v) {
+            if(planes1[currentSlice1]) {
+                planes1[currentSlice1].position.y =0;
+            }
+            currentSlice1=v;
+            planes1[currentSlice1].position.y=0.8;
+        });
+
+        var obj = {Zoom_Saggatial: 0.8};
+        var gui = new dat.gui.GUI();
+        gui.add(obj, "Zoom_Saggatial", 0.8,2.4,0.2).onChange(function (v) {
+            for(var i=0;i<129;i++)
+            {
+                planes[i].scaling=new BABYLON.Vector3(v, v, v);
+            }
+        });
+
+        var obj = {Zoom_Axial: 0.6};
+        var gui = new dat.gui.GUI();
+        gui.add(obj, "Zoom_Axial", 0.6,2.2,0.2).onChange(function (v) {
+            for(var i=0;i<101;i++)
+            {
+                planes1[i].scaling=new BABYLON.Vector3(v, v, v);
+            }
+        });
+
+        var obj = {Zoom_Coronal: 0.8};
+        var gui = new dat.gui.GUI();
+        gui.add(obj, "Zoom_Coronal", 0.8,2.4,0.2).onChange(function (v) {
+            for(var i=1;i<31;i++)
+            {
+                planes2[i].scaling=new BABYLON.Vector3(v, v, v);
+            }
+        });
 
         return scene;
     };
