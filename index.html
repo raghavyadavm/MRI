@@ -70,23 +70,31 @@
         var canvasHeight = 100;
         var canvasWidth = 100;
 
-
-        p = BABYLON.MeshBuilder.CreatePlane("plane", {width: canvasWidth/100, height:canvasHeight/100}, scene);
-        p.position = new BABYLON.Vector3(0,0,1);
+        var p = BABYLON.MeshBuilder.CreatePlane("plane", {width:1, height:1}, scene);
+        var material1 = new BABYLON.StandardMaterial("material", scene);
+        p.material = material1;
+        material1.backFaceCulling = false;
+        p.position = new BABYLON.Vector3(0,0,1.5);
         p.scaling = new BABYLON.Vector3(0.8,0.8,0.8);
         p.isVisible=false;
 
-        p1 = BABYLON.MeshBuilder.CreatePlane("plane1", {width: canvasWidth/100, height:canvasHeight/100}, scene);
+        var p1 = BABYLON.MeshBuilder.CreatePlane("plane1", {width:1, height:1}, scene);
+        var material1 = new BABYLON.StandardMaterial("material", scene);
+        p1.material = material1;
+        material1.backFaceCulling = false;
         p1.position = new BABYLON.Vector3(-0.5,0,0);
         p1.scaling = new BABYLON.Vector3(0.6,0.6,0.6);
         p1.isVisible=false;
-        p1.rotation.y=Math.PI/2;
+        p1.rotation.y=Math.PI;
 
-        p2 = BABYLON.MeshBuilder.CreatePlane("plane2", {width: canvasWidth/100, height:canvasHeight/100}, scene);
-        p2.position = new BABYLON.Vector3(0,0,-1);
+        var p2 = BABYLON.MeshBuilder.CreatePlane("plane2", {width:1, height:1}, scene);
+        var material1 = new BABYLON.StandardMaterial("material", scene);
+        p2.material = material1;
+        material1.backFaceCulling = false;
+        p2.position = new BABYLON.Vector3(0,0,-1.5);
         p2.scaling = new BABYLON.Vector3(0.8,0.8,0.8);
         p2.isVisible=false;
-        p2.rotation.y=-Math.PI/2;
+        p2.rotation.y=-Math.PI;
 
         for (var i = 0; i<129; i++) {
 
@@ -119,9 +127,10 @@
                 planes[i] = BABYLON.MeshBuilder.CreatePlane("plane" + i, {width: canvasWidth/100, height:canvasHeight/100}, scene);
                 planes[i].material = mats[i];
                 mats[i].backFaceCulling = false;
-                planes[i].position.z = i/200;
-                planes[i].checkCollisions = true;
+                planes[i].position.z= i/200-0.32;
                 planes[i].parent=p;
+                planes[i].checkCollisions = true;
+
             }
         }
 
@@ -155,12 +164,16 @@
                 mats1[i].emissiveTexture = dynamics1[i]; //set texture to appropriate canvas
                 mats1[i].opacityTexture = dynamics1[i];
 
-                planes1[i] = BABYLON.MeshBuilder.CreatePlane("plane1" + i, {width: canvasWidth/100, height:canvasHeight/100, updatable:true}, scene);
+                planes1[i] = BABYLON.MeshBuilder.CreatePlane("plane1" + i, {width: 1, height:1, updatable:true}, scene);
                 planes1[i].material = mats1[i];
                 mats1[i].backFaceCulling = false;
                 planes1[i].checkCollisions = true;
-                planes1[i].position.z = i/200;
+                //planes1[i].position.z = i/200-0.25;
+                planes1[i].rotation.y = Math.PI/2;
+                planes1[i].position.x=i/200;
+                planes1[i].position.z=-0.1;
                 planes1[i].parent=p1;
+
             }
         }
 
@@ -197,43 +210,56 @@
                 planes2[i].material = mats2[i];
                 mats2[i].backFaceCulling = false;
                 planes2[i].checkCollisions = true;
-                planes2[i].position.z = i/200;
-                planes2[i].parent=p2;;
+               //planes2[i].position.z = i/200-0.075;
+                planes2[i].position.x = i/200;
+                planes2[i].rotation.y = -Math.PI/2;
+                planes2[i].position.z= 0.1;
+                planes2[i].parent=p2;
             }
         }
 
 
-        var currentPosition = {x: 0, y: 0};
+        var currentPosition={x:0,y:0};
+        //= {x: 1.4, y: 3.4};
         var currentRotation = {x: 0, y: 0};
         var clicked = false;
 
+        var currentPosition1={x:0,y:0};
+        //= {x: 1.4, y: 3.4};
+        var currentRotation1 = {x: 0, y: 0};
+
         function rmv_pd1(evt) {
-            currentPosition.x = evt.clientX;
-            currentPosition.y = evt.clientY;
+            currentPosition1.x = evt.clientX;
+            currentPosition1.y = evt.clientY;
             for (i = 0; i < 129; i++) {
-                currentRotation.x = p1.rotation.x;
-                currentRotation.y = p1.rotation.y;
+                currentRotation1.x = p1.rotation.x;
+                currentRotation1.y = p1.rotation.y;
                 clicked = true;
             }
         }
 
-        function rmv_pm1(evt)
-        {
+        function rmv_pm1(evt) {
             if (!clicked) {
                 return;
             }
-            p1.rotation.y = currentRotation.y - (evt.clientX - currentPosition.x) / 100.0;
-            p1.rotation.x = currentRotation.x + (evt.clientY - currentPosition.y) / 100.0;
+            p1.rotation.y = currentRotation1.y - (evt.clientX - currentPosition1.x) / 100;
+            p1.rotation.x = currentRotation1.x + (evt.clientY - currentPosition1.y) / 100;
         }
+
+
 
         function rmv_pu(evt)
         {
             clicked = false;
         }
 
-        var currentPosition = {x: 0, y: 0};
+
+        //var remove_plane = function() {
+        var currentPosition;
+        //= {x: 0.4, y: 0.4};
         var currentRotation = {x: 0, y: 0};
         var clicked = false;
+
 
         function rmv_pd(evt) {
             currentPosition.x = evt.clientX;
@@ -244,18 +270,21 @@
                 clicked = true;
             }
         }
-        function rmv_pm(evt)
-        {
+
+        function rmv_pm(evt) {
+            console.log("First MRI");
             if (!clicked) {
                 return;
             }
-            p.rotation.y = currentRotation.y - (evt.clientX - currentPosition.x) / 100.0;
-            p.rotation.x = currentRotation.x + (evt.clientY - currentPosition.y) / 100.0;
+            p.rotation.y = currentRotation.y - (evt.clientX - currentPosition.x) / 100;
+            p.rotation.x = currentRotation.x + (evt.clientY - currentPosition.y) / 100;
         }
+        //}
 
-        var currentPosition = {x: 0, y: 0};
+        //var currentPosition = {x: 0.4, y: 0.4};
         var currentRotation = {x: 0, y: 0};
         var clicked = false;
+
 
         function rmv_pd2(evt) {
             currentPosition.x = evt.clientX;
@@ -271,8 +300,8 @@
             if (!clicked) {
                 return;
             }
-            p2.rotation.y = currentRotation.y - (evt.clientX - currentPosition.x) / 100.0;
-            p2.rotation.x = currentRotation.x + (evt.clientY - currentPosition.y) / 100.0;
+            p2.rotation.y = currentRotation.y - (evt.clientX - currentPosition.x)/100 ;
+            p2.rotation.x = currentRotation.x + (evt.clientY - currentPosition.y)/100 ;
         }
 
         canvas.addEventListener("pointerup", rmv_pu,true);
@@ -280,7 +309,7 @@
         var sphere = BABYLON.Mesh.CreatePlane("sphere", 0.1, scene);
         sphere.position = new BABYLON.Vector3(-1,0.7,0.8);
         sphere.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
-      //  sphere.scaling = new BABYLON.Vector3(0.5,0.5,0.5);
+        //  sphere.scaling = new BABYLON.Vector3(0.5,0.5,0.5);
 
         sphere.actionManager = new BABYLON.ActionManager(scene);
         sphere.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, function () {
@@ -292,18 +321,21 @@
             canvas.addEventListener("pointerdown",rmv_pd,true);
             canvas.addEventListener("pointermove",rmv_pm,true);
             p1.position = new BABYLON.Vector3(-0.5,0,0);
-            p1.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+            /*for (var i = 0; i<101; i++)
+            {
+                planes1[i].rotation.y=Math.PI/2;
+            }*/
+            p1.rotation = new BABYLON.Vector3(0, Math.PI, 0);
             p1.scaling = new BABYLON.Vector3(0.6,0.6,0.6);
-            p2.position = new BABYLON.Vector3(0,0,-1);
-            p2.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
+            p2.position = new BABYLON.Vector3(0,0,-1.5);
+            p2.rotation = new BABYLON.Vector3(0, Math.PI, 0);
             p2.scaling = new BABYLON.Vector3(0.8,0.8,0.8);
         }));
 
         var sphere1 = BABYLON.Mesh.CreatePlane("sphere1", 0.1, scene);
         sphere1.position = new BABYLON.Vector3(-1,0.7,0);
         sphere1.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
-       // sphere1.scaling = new BABYLON.Vector3(0.5,0.5,0.5);
-
+        // sphere1.scaling = new BABYLON.Vector3(0.5,0.5,0.5);
 
         sphere1.actionManager = new BABYLON.ActionManager(scene);
         sphere1.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, function () {
@@ -314,11 +346,11 @@
             canvas.removeEventListener("pointermove",rmv_pm2,true);
             canvas.addEventListener("pointerdown",rmv_pd1,true);
             canvas.addEventListener("pointermove",rmv_pm1,true);
-            p.position = new BABYLON.Vector3(0,0,1);
+            p.position = new BABYLON.Vector3(0,0,1.5);
             p.rotation =  new BABYLON.Vector3(0, 0, 0);
             p.scaling = new BABYLON.Vector3(0.8,0.8,0.8);
-            p2.position = new BABYLON.Vector3(0,0,-1);
-            p2.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
+            p2.position = new BABYLON.Vector3(0,0,-1.5);
+            p2.rotation = new BABYLON.Vector3(0, Math.PI, 0);
             p2.scaling = new BABYLON.Vector3(0.8,0.8,0.8);
         }));
 
@@ -337,11 +369,11 @@
             canvas.removeEventListener("pointermove",rmv_pm1,true);
             canvas.addEventListener("pointerdown",rmv_pd2,true);
             canvas.addEventListener("pointermove",rmv_pm2,true);
-            p.position = new BABYLON.Vector3(0,0,1);
+            p.position = new BABYLON.Vector3(0,0,1.5);
             p.rotation =  new BABYLON.Vector3(0, 0, 0);
             p.scaling = new BABYLON.Vector3(0.8,0.8,0.8);
             p1.position = new BABYLON.Vector3(-0.5,0,0);
-            p1.rotation =  new BABYLON.Vector3(0,Math.PI/2, 0);
+            p1.rotation =  new BABYLON.Vector3(0,Math.PI, 0);
             p1.scaling = new BABYLON.Vector3(0.6,0.6,0.6);
 
         }));
@@ -350,28 +382,35 @@
         var currentSlice1=100;
         var currentSlice2=30;
 
-        var obj = {Coronal: 30};
-        var gui = new dat.gui.GUI();
+        var oldgui = document.querySelector("#datGUI");
+        if (oldgui != null)
+        {
+            oldgui.remove();
+        }
+
+        var gui = new dat.GUI();
+        gui.domElement.style.marginTop = "20px";
+        gui.domElement.style.width = "400px";
+        gui.domElement.id = "datGUI";
+
+        var obj={Coronal:30,Saggital: 128,Axial: 100,Zoom_Saggatial: 0.8,Zoom_Axial: 0.6,Zoom_Coronal: 0.8};
+
         gui.add(obj, "Coronal",1,30,1).onChange(function (v) {
             if(planes2[currentSlice2]) {
                 planes2[currentSlice2].position.y = 0;
             }
             currentSlice2=v;
-            planes2[currentSlice2].position.y=0.5;
+            planes2[currentSlice2].position.y=0.8;
         });
 
-        var obj = {Saggital: 128};
-        var gui = new dat.gui.GUI();
         gui.add(obj, "Saggital", 0,128,1).onChange(function (v) {
             if(planes[currentSlice]) {
                 planes[currentSlice].position.y = 0;
             }
             currentSlice=v;
-            planes[currentSlice].position.y=0.5;
+            planes[currentSlice].position.y=0.8;
         });
 
-        var obj = {Axial: 100};
-        var gui = new dat.gui.GUI();
         gui.add(obj, "Axial", 0,100,1).onChange(function (v) {
             if(planes1[currentSlice1]) {
                 planes1[currentSlice1].position.y =0;
@@ -380,17 +419,12 @@
             planes1[currentSlice1].position.y=0.8;
         });
 
-        var obj = {Zoom_Saggatial: 0.8};
-        var gui = new dat.gui.GUI();
         gui.add(obj, "Zoom_Saggatial", 0.8,2.4,0.2).onChange(function (v) {
             for(var i=0;i<129;i++)
             {
                 planes[i].scaling=new BABYLON.Vector3(v, v, v);
             }
         });
-
-        var obj = {Zoom_Axial: 0.6};
-        var gui = new dat.gui.GUI();
         gui.add(obj, "Zoom_Axial", 0.6,2.2,0.2).onChange(function (v) {
             for(var i=0;i<101;i++)
             {
@@ -398,8 +432,6 @@
             }
         });
 
-        var obj = {Zoom_Coronal: 0.8};
-        var gui = new dat.gui.GUI();
         gui.add(obj, "Zoom_Coronal", 0.8,2.4,0.2).onChange(function (v) {
             for(var i=1;i<31;i++)
             {
